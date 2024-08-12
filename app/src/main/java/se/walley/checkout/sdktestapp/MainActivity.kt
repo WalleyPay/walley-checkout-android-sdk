@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import se.walley.checkout.sdk.WalleyCheckoutEventListener
 import se.walley.checkout.sdk.WalleyCheckoutSDK
 import se.walley.checkout.sdktestapp.ui.theme.SDKTestAPPTheme
 
@@ -28,14 +29,14 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             SDKTestAPPTheme {
-                Iframe(context = this)
+                Checkout(context = this)
             }
         }
     }
 }
 
 @Composable
-fun Iframe(context: Context) {
+fun Checkout(context: Context) {
     // Remember the state of the TextField input
     val publicToken = remember { mutableStateOf("") }
 
@@ -58,7 +59,12 @@ fun Iframe(context: Context) {
                     context,
                     publicToken.value,
                     "",
-                    ""
+                    "",
+                    eventListener = object : WalleyCheckoutEventListener {
+                        override fun onEventReceived(event: String) {
+                            println("Checkout event received from SDK: $event")
+                        }
+                    }
                 )
             },
             modifier = Modifier.padding(top = 16.dp)
