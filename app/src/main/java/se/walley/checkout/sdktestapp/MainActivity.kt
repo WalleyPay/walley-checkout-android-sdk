@@ -53,12 +53,16 @@ fun Checkout(context: Context) {
         )
 
         // Button to trigger the showCheckout function
+        // Parameters: https://dev.walleypay.com/docs/checkout/renderiframe/#script-element
         Button(
             onClick = {
                 WalleyCheckoutSDK.showCheckout(
                     context,
                     publicToken.value,
                     "",
+                    "",
+                    "",
+                    "#55ff00",
                     "",
                     eventListener = object : WalleyCheckoutEventListener {
                         override fun onEventReceived(event: String) {

@@ -11,14 +11,20 @@ object WalleyCheckoutSDK {
         context: Context,
         publicToken: String,
         lang: String,
+        padding: String,
+        containerId: String,
         actionColor: String,
+        actionTextColor: String,
         eventListener: WalleyCheckoutEventListener? = null
     ) {
         this.checkoutEventListener = eventListener
         val intent = Intent(context, WalleyCheckoutActivity::class.java).apply {
             putExtra("publicToken", publicToken)
             putExtra("lang", lang)
+            putExtra("padding", padding)
+            putExtra("containerId", containerId)
             putExtra("actionColor", actionColor)
+            putExtra("actionTextColor", actionTextColor)
         }
         context.startActivity(intent)
     }

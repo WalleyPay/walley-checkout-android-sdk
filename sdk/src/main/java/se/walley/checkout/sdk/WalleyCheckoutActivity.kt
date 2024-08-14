@@ -1,7 +1,6 @@
 package se.walley.checkout.sdk
 
 import android.os.Bundle
-import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import androidx.activity.ComponentActivity
@@ -16,10 +15,6 @@ class WalleyCheckoutActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        val publicToken = intent.getStringExtra("publicToken") ?: ""
-        val lang = intent.getStringExtra("lang") ?: ""
-        val actionColor = intent.getStringExtra("actionColor") ?: ""
 
         setContent {
             AndroidView(
@@ -39,7 +34,14 @@ class WalleyCheckoutActivity : ComponentActivity() {
 
                         addJavascriptInterface(WebAppInterface(), "Android")
 
-                        val htmlContent = buildHtmlContent(publicToken, lang, actionColor)
+                        val htmlContent = buildHtmlContent(
+                            intent.getStringExtra("publicToken") ?: "",
+                            intent.getStringExtra("lang") ?: "",
+                            intent.getStringExtra("padding") ?: "",
+                            intent.getStringExtra("containerId") ?: "",
+                            intent.getStringExtra("actionColor") ?: "",
+                            intent.getStringExtra("actionTextColor") ?: ""
+                        )
 
                         loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
                     }
@@ -48,7 +50,14 @@ class WalleyCheckoutActivity : ComponentActivity() {
         }
     }
 
-    private fun buildHtmlContent(publicToken: String, lang: String, actionColor: String): String {
+    private fun buildHtmlContent(
+        publicToken: String,
+        lang: String,
+        padding: String,
+        containerId: String,
+        actionColor: String,
+        actionTextColor: String
+    ): String {
         val loaderUrl = createLoaderUrl()
 
         return """
@@ -62,7 +71,10 @@ class WalleyCheckoutActivity : ComponentActivity() {
                     src="$loaderUrl"
                     data-token="$publicToken"
                     data-lang="$lang"
-                    data-actionColor="$actionColor"
+                    data-padding="$padding"
+                    data-container-id="$containerId"
+                    data-action-color="$actionColor"
+                    data-action-text-color="$actionTextColor"
                     data-webview="true">
                 </script>
             </body>
