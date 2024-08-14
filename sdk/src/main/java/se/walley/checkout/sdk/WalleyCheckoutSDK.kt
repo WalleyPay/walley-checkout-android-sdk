@@ -9,6 +9,7 @@ object WalleyCheckoutSDK {
 
     fun showCheckout(
         context: Context,
+        environment: WalleyCheckoutEnvironment = WalleyCheckoutEnvironment.PRODUCTION,
         publicToken: String,
         lang: String,
         padding: String,
@@ -19,6 +20,7 @@ object WalleyCheckoutSDK {
     ) {
         this.checkoutEventListener = eventListener
         val intent = Intent(context, WalleyCheckoutActivity::class.java).apply {
+            putExtra("environment", environment)
             putExtra("publicToken", publicToken)
             putExtra("lang", lang)
             putExtra("padding", padding)

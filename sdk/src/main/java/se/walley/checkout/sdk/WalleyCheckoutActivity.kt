@@ -34,7 +34,15 @@ class WalleyCheckoutActivity : ComponentActivity() {
 
                         addJavascriptInterface(WebAppInterface(), "Android")
 
+                        val environment = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                            intent.getParcelableExtra("environment", WalleyCheckoutEnvironment::class.java) ?: WalleyCheckoutEnvironment.PRODUCTION
+                        } else {
+                            @Suppress("DEPRECATION")
+                            intent.getSerializableExtra("environment") as? WalleyCheckoutEnvironment ?: WalleyCheckoutEnvironment.PRODUCTION
+                        }
+
                         val htmlContent = buildHtmlContent(
+                            environment,
                             intent.getStringExtra("publicToken") ?: "",
                             intent.getStringExtra("lang") ?: "",
                             intent.getStringExtra("padding") ?: "",
@@ -51,6 +59,7 @@ class WalleyCheckoutActivity : ComponentActivity() {
     }
 
     private fun buildHtmlContent(
+        environment: WalleyCheckoutEnvironment,
         publicToken: String,
         lang: String,
         padding: String,
@@ -58,7 +67,7 @@ class WalleyCheckoutActivity : ComponentActivity() {
         actionColor: String,
         actionTextColor: String
     ): String {
-        val loaderUrl = createLoaderUrl()
+        val loaderUrl = createLoaderUrl(environment)
 
         return """
             <!DOCTYPE html>
@@ -92,8 +101,12 @@ class WalleyCheckoutActivity : ComponentActivity() {
         }
     }
 
-    private fun createLoaderUrl(): String {
-        val baseUrl = "https://api.ci.walleydev.com"
+    private fun createLoaderUrl(environment: WalleyCheckoutEnvironment): String {
+        val baseUrl = when (environment) {
+            WalleyCheckoutEnvironment.PRODUCTION -> "https://checkout.collector.se"
+            WalleyCheckoutEnvironment.UAT -> "https://checkout-uat.collector.se"
+            WalleyCheckoutEnvironment.CI -> "https://checkout-ci.collector.se"
+        }
         return "$baseUrl/walley-checkout-loader.js"
     }
 

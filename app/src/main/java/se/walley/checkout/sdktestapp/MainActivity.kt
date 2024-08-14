@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import se.walley.checkout.sdk.WalleyCheckoutEnvironment
 import se.walley.checkout.sdk.WalleyCheckoutEventListener
 import se.walley.checkout.sdk.WalleyCheckoutSDK
 import se.walley.checkout.sdktestapp.ui.theme.SDKTestAPPTheme
@@ -58,11 +59,12 @@ fun Checkout(context: Context) {
             onClick = {
                 WalleyCheckoutSDK.showCheckout(
                     context,
+                    WalleyCheckoutEnvironment.UAT,
                     publicToken.value,
                     "",
                     "",
                     "",
-                    "#55ff00",
+                    "",
                     "",
                     eventListener = object : WalleyCheckoutEventListener {
                         override fun onEventReceived(event: String) {
